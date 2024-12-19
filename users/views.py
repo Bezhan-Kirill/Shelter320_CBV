@@ -55,7 +55,6 @@ class UserPasswordChangeView(PasswordChangeView):
 
 class UserLogoutView(LogoutView):
     template_name = 'users/logout.html'
-    pass
 
 
 def user_login_view(request):
