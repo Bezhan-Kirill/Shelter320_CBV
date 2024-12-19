@@ -12,7 +12,7 @@ from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
 
 from users.models import User
-from users.forms import UserRegisterForm, UserLoginForm, UserUpdateForm, UserPasswordChangeForm
+from users.forms import UserRegisterForm, UserLoginForm, UserUpdateForm, UserPasswordChangeForm, UserForm
 from users.services import send_register_email, send_new_password
 
 
@@ -23,9 +23,19 @@ class UserRegisterView(CreateView):
     success_url = reverse_lazy('users:login_user')
     template_name = 'users/register_user.html'
 
+
 class UserLoginView(LoginView):
     template_name = 'users/login_user.html'
     form_class = UserLoginForm
+
+
+class UserProfileView(UpdateView):
+    model = User
+    form_class = UserForm
+    template_name = 'users/user_profile.html'
+
+    def get_object(self, queryset=None):
+        return self.request.user
 
 def user_login_view(request):
     if request.method == 'POST':
