@@ -53,6 +53,11 @@ class UserPasswordChangeView(PasswordChangeView):
     success_url = reverse_lazy('users:profile_user')
 
 
+class UserLogoutView(LogoutView):
+    template_name = 'users/logout.html'
+    pass
+
+
 def user_login_view(request):
     if request.method == 'POST':
         form = UserLoginForm(request.POST)
