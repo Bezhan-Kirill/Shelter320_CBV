@@ -23,20 +23,9 @@ class UserRegisterView(CreateView):
     success_url = reverse_lazy('users:login_user')
     template_name = 'users/register_user.html'
 
-def user_register_view(request):
-    form = UserRegisterForm(request.POST)
-    if request.method == 'POST':
-        if form.is_valid():
-            new_user = form.save()
-            new_user.set_password(form.cleaned_data['password'])
-            new_user.save()
-            send_register_email(new_user.email)
-            return HttpResponseRedirect(reverse('users:login_user'))
-    context = {
-        'form': form
-    }
-    return render(request, 'users/register_user.html', context)
-
+class UserLoginView(LoginView):
+    template_name = 'users/login_user.html'
+    form_class = UserLoginForm
 
 def user_login_view(request):
     if request.method == 'POST':
