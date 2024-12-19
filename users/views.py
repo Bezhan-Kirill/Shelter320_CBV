@@ -3,19 +3,30 @@ import string
 
 from django.http import HttpResponseRedirect, HttpResponse
 
+from django.contrib.auth.views import LoginView, PasswordChangeView, LogoutView
+from django.views.generic import CreateView, UpdateView
 from django.contrib import messages
-from django.urls import reverse
 from django.shortcuts import render, reverse, redirect
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
+from django.urls import reverse_lazy
 
+from users.models import User
 from users.forms import UserRegisterForm, UserLoginForm, UserUpdateForm, UserPasswordChangeForm
-from  users.services import send_register_email, send_new_password
+from users.services import send_register_email, send_new_password
+
+
+
+class UserRegisterView(CreateView):
+    model = User
+    form_class = UserRegisterForm
+    success_url = reverse_lazy('users:login_user')
+    template_name = 'users/register_user.html'
 
 def user_register_view(request):
-    form = UserRegisterForm(request.POST) # POST
+    form = UserRegisterForm(request.POST)
     if request.method == 'POST':
-        if form.is_valid(): # Если форма валидна сохраняет введеные данные
+        if form.is_valid():
             new_user = form.save()
             new_user.set_password(form.cleaned_data['password'])
             new_user.save()
