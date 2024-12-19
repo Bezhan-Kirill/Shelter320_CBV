@@ -37,6 +37,16 @@ class UserProfileView(UpdateView):
     def get_object(self, queryset=None):
         return self.request.user
 
+
+class UserUpdateView(UpdateView):
+    model = User
+    form_class = UserUpdateForm
+    template_name = 'users/update_user.html'
+    success_url = reverse_lazy('users:profile_user')
+
+    def get_object(self, queryset=None):
+        return self.request.user
+
 def user_login_view(request):
     if request.method == 'POST':
         form = UserLoginForm(request.POST)
@@ -55,21 +65,6 @@ def user_login_view(request):
         'form': form
     }
     return render(request, 'users/login_user.html', context)
-
-@login_required
-def user_profile_view(request):
-    user_object = request.user
-    if user_object.first_name:
-        user_name = user_object.first_name
-    else:
-        user_name = "Anonymous"
-    context = {
-        # 'user_object': user_object,
-        'title': f'Ваш профиль {user_name}',
-        # 'form': UserForm(instance=user_object),
-    }
-    return render(request, 'users/user_profile_read_only.html', context)
-
 @login_required
 def user_update_view(request):
     user_object = request.user
