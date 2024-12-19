@@ -16,7 +16,6 @@ from users.forms import UserRegisterForm, UserLoginForm, UserUpdateForm, UserPas
 from users.services import send_register_email, send_new_password
 
 
-
 class UserRegisterView(CreateView):
     model = User
     form_class = UserRegisterForm
@@ -47,6 +46,13 @@ class UserUpdateView(UpdateView):
     def get_object(self, queryset=None):
         return self.request.user
 
+
+class UserPasswordChangeView(PasswordChangeView):
+    form_class = UserPasswordChangeForm
+    template_name = 'users/change_password_user.html'
+    success_url = reverse_lazy('users:profile_user')
+
+
 def user_login_view(request):
     if request.method == 'POST':
         form = UserLoginForm(request.POST)
@@ -65,6 +71,8 @@ def user_login_view(request):
         'form': form
     }
     return render(request, 'users/login_user.html', context)
+
+
 @login_required
 def user_update_view(request):
     user_object = request.user
@@ -82,26 +90,11 @@ def user_update_view(request):
         }
         return render(request, 'users/update_user.html', context)
 
-def user_change_password_view(request):
-    user_object = request.user
-    form = UserPasswordChangeForm(user_object, request.POST)
-    if request.method == "POST":
-        if form.is_valid():
-            user_object = form.save()
-            update_session_auth_hash(request, user_object)
-            messages.success(request, "Пароль был успешно изменен!")
-            return HttpResponseRedirect(reverse('users:profile'))
-        else:
-            messages.error(request, "Не удалось изменить пароль!")
-
-    context = {
-        'form': form
-    }
-    return render(request, 'users/change_password_user.html', context)
 
 def user_logout_view(request):
     logout(request)
     return redirect('dogs:index')
+
 
 @login_required()
 def user_generate_new_password(request):
