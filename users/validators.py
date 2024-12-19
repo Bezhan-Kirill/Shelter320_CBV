@@ -1,12 +1,30 @@
 import re
 from django.core.exceptions import ValidationError
+from django.conf import settings
+
 
 
 def validate_password(field):
     pattern = re.compile(r'^[A-Za-z0-9]+$')
+    language = settings.LANGUAGE_CODE
+    error_messages = [
+        {
+            'ru-ru': 'Пароль должен содержать только символы латинского алфавита и цифры!',
+            'en-us': 'Must contain A-Z a-z letters and 0-9 numbers'
+        },
+        {
+            'ru-ru': 'Длина пароля должна быть между 8 и 12 символами',
+            'en-us': 'Password length must be between 8 and 16 charters'
+        }
+    ]
     if not bool(re.match(pattern, field)):
-        # print('Must contain A-Z, a-z letters and 0-9 numbers')
-        raise ValidationError('Пароль должен содержать символы латинского алфавита и цифры')
-    if not 6 <= len(field) <= 12:
-        # print('Password length must be between 8 and 12 charters')
-        raise ValidationError('Длина пароля должна быть между 8 и 12 символами')
+        print(error_messages[0][language])
+        raise ValidationError(
+            error_messages[0][language],
+            code=error_messages[0][language]
+        )
+    if not 8 <= len(field) <= 16:
+        raise ValidationError(
+            error_messages[1][language],
+            code=error_messages[1][language]
+        )
