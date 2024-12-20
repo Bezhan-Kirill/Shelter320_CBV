@@ -42,6 +42,13 @@ class DogListView(ListView):
     }
     template_name = 'dogs/dogs.html'
 
+
+class DogCreateView(CreateView):
+    model = Dog
+    form_class = DogForm
+    template_name = 'dogs/create_update.html'
+    success_url = reverse_lazy('dogs:list_dogs')
+
 @login_required
 def dogs_list_view(request):
     context = {
