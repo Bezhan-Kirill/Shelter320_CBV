@@ -1,13 +1,10 @@
 import random
 import string
 
-from django.http import HttpResponseRedirect, HttpResponse
 
 from django.contrib.auth.views import LoginView, PasswordChangeView, LogoutView
 from django.views.generic import CreateView, UpdateView
-from django.contrib import messages
 from django.shortcuts import render, reverse, redirect
-from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
 
@@ -55,49 +52,6 @@ class UserPasswordChangeView(PasswordChangeView):
 
 class UserLogoutView(LogoutView):
     template_name = 'users/logout.html'
-
-
-def user_login_view(request):
-    if request.method == 'POST':
-        form = UserLoginForm(request.POST)
-        if form.is_valid():
-            cd = form.cleaned_data
-            user = authenticate(email=cd['email'], password=cd['password'])
-            if user is not None:
-                if user.is_active:
-                    login(request, user)
-                    return HttpResponseRedirect(reverse('dogs:index'))
-                else:
-                    return HttpResponse('Аккаунт неактивен!')
-
-    form = UserLoginForm
-    context = {
-        'form': form
-    }
-    return render(request, 'users/login_user.html', context)
-
-
-@login_required
-def user_update_view(request):
-    user_object = request.user
-    if request.method == 'POST':
-        form = UserUpdateForm(request.POST, request.FILES, instance=user_object)
-        if form.is_valid():
-            user_object = form.save()
-            user_object.save()
-            return HttpResponseRedirect(reverse('user:profile_user'))
-        user_name = user_object.first_name
-        context = {
-            'user_object': user_object,
-            'title': f'изменит профиль {user_name}',
-            'form': UserUpdateForm(instance=user_object)
-        }
-        return render(request, 'users/update_user.html', context)
-
-
-def user_logout_view(request):
-    logout(request)
-    return redirect('dogs:index')
 
 
 @login_required()

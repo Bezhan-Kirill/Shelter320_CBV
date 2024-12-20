@@ -11,6 +11,9 @@
                         Добавление собаки
                     {% endif %}
                 </div>
+                <img class="card-img-top"
+                src="{{ object.photo|dogs_media }}" width="300" height="400"
+                alt="Card image cap">
                 <div class="card-body">
 
                     {% csrf_token %}

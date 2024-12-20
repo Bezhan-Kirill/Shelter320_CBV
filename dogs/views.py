@@ -1,6 +1,7 @@
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
+from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
 from django.contrib.auth.decorators import login_required
 
 from dogs.models import Category, Dog
@@ -34,6 +35,12 @@ def category_dogs(request, pk):
     }
     return render(request, 'dogs/dogs.html', context)
 
+class DogListView(ListView):
+    model = Dog
+    extra_context = {
+        'title': 'Питомник - Все наши собаки',
+    }
+    template_name = 'dogs/dogs.html'
 
 @login_required
 def dogs_list_view(request):
