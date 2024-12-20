@@ -1,5 +1,4 @@
-from django.http import HttpResponseRedirect
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render
 from django.urls import reverse, reverse_lazy
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
 from django.contrib.auth.decorators import login_required
@@ -55,38 +54,16 @@ class DogDetailView(DetailView):
     template_name = 'dogs/detail.html'
 
 
-@login_required
-def dog_detail_view(request, pk):
-    context = {
-        'object': Dog.objects.get(pk=pk),
-        'title': 'Вы выбрали данного питомца'
-    }
-    return render(request, 'dogs/detail.html', context)
+class DogUpdateView(UpdateView):
+    model = Dog
+    form_class = DogForm
+    template_name = 'dogs/create_update.html'
+
+    def get_success_url(self):
+        return reverse('dogs:detail_dog', args=[self.kwargs.get('pk')])
 
 
-@login_required
-def dog_update_view(request, pk):
-    # dog_object = Dog.objects.get(pk=pk)
-    dog_object = get_object_or_404(Dog, pk=pk)
-    if request.method == "POST":
-        form = DogForm(request.POST, request.FILES, instance=dog_object)
-        if form.is_valid():
-            dog_object = form.save()
-            dog_object.save()
-            return HttpResponseRedirect(reverse('dogs:detail_dogs', args={pk: pk}))
-    context = {
-        'object': dog_object,
-        'form': DogForm(instance=dog_object)
-    }
-    return render(request, 'dogs/create_update.html', context)
-
-
-@login_required
-def dog_delete_view(request, pk):
-    dog_object = get_object_or_404(Dog, pk=pk)
-    if request.method == 'POST':
-        dog_object.delete()
-        return HttpResponseRedirect(reverse('dogs:list_dogs'))
-    return render(request, 'dogs/delete.html', {
-        'object': dog_object,
-    })
+class DogDeleteView(DeleteView):
+    model = Dog
+    template_name = 'dogs/delete.html'
+    success_url = reverse_lazy('dogs:list_dogs')
