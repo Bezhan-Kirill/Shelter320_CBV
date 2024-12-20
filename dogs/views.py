@@ -49,30 +49,10 @@ class DogCreateView(CreateView):
     template_name = 'dogs/create_update.html'
     success_url = reverse_lazy('dogs:list_dogs')
 
-@login_required
-def dogs_list_view(request):
-    context = {
-        'object_list': Dog.objects.all(),
-        'title': 'Питомник - Все наши собаки',
-    }
-    return render(request, 'dogs/dogs.html', context)
 
-
-@login_required
-def dog_create_view(request):
-    if request.method == 'POST':
-        form = DogForm(request.POST, request.FILES)
-        if form.is_valid():
-            dog_object = form.save()
-            dog_object.owner = request.user
-            dog_object.save()
-            form.save()
-            return HttpResponseRedirect(reverse('dogs:list_dogs'))
-    context = {
-        'title': 'Добавление питомца',
-        'form': DogForm(),
-    }
-    return render(request, 'dogs/create_update.html', context)
+class DogDetailView(DetailView):
+    model = Dog
+    template_name = 'dogs/detail.html'
 
 
 @login_required
