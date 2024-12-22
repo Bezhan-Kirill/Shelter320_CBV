@@ -1,7 +1,6 @@
 import random
 import string
 
-
 from django.contrib.auth.views import LoginView, PasswordChangeView, LogoutView
 from django.views.generic import CreateView, UpdateView
 from django.shortcuts import render, reverse, redirect
@@ -18,6 +17,11 @@ class UserRegisterView(CreateView):
     form_class = UserRegisterForm
     success_url = reverse_lazy('users:login_user')
     template_name = 'users/register_user.html'
+
+    def form_valid(self, form):
+        self.object - form.save()
+        send_register_email(self.object.email)
+        return super().form_valid(form)
 
 
 class UserLoginView(LoginView):

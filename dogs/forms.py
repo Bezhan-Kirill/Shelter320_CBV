@@ -6,7 +6,7 @@ from dogs.models import Dog
 from users.forms import StyleFormMixin
 
 
-class DogForm(StyleFormMixin, forms.ModelForm):
+class DogForm(forms.ModelForm):
     class Meta:
         model = Dog
         exclude = ('owner',)
