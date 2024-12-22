@@ -162,6 +162,17 @@ LOGIN_REDIRECT_URL = 'dogs:index' # '/'
 # LOGOUT_REDIRECT_URL = 'dogs:index' # '/'
 LOGIN_URL = '/users/'
 
+CACHE_ENABLED = os.getenv('CACHE_ENABLED') == 'True'
+# CACHE_ENABLED=True
+# CACHE_LOCATION=redis://127.0.0.1:6379
+if CACHE_ENABLED:
+    CACHE = {
+        'default': {
+            "BACKEND": "django.core.cache.backends.redis.RedisCache",
+            "LOCATION": os.getenv("CACHE_LOCATION")
+        }
+    }
+
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.yandex.com'
 EMAIL_PORT = 465
