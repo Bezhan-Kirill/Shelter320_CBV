@@ -21,7 +21,6 @@ class Dog(models.Model):
     photo = models.ImageField(upload_to='dogs/', **NULLABLE, verbose_name='image')
     birth_date = models.DateField(**NULLABLE, verbose_name='birth_date')
 
-
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, **NULLABLE,
                               verbose_name='владелец')
     def __str__(self):
@@ -37,3 +36,17 @@ class Dog(models.Model):
         # permessions = [] # добавляются группы пользователей которые могут изменять сущность данной модели
         # db_table = 'doggies' # перезаписть ия таблицы в БД
         # get_latest_by = 'birth_date' # Возвращает последний объект по порядку возрастания (самая молодая собака)
+
+
+class Parent(models.Model):
+    dog = models.ForeignKey(Dog, on_delete=models.CASCADE)
+    name = models.CharField(max_length=250, verbose_name='dog_name')
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, verbose_name='breed')
+    birth_date = models.DateField(**NULLABLE, verbose_name='birth_date')
+
+    def __str__(self):
+        return f'{self.name} ({self.category})'
+
+    class Meta:
+        verbose_name = 'parent'
+        verbose_name_plural = 'parents'
