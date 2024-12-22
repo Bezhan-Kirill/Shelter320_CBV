@@ -1,3 +1,6 @@
 mssql-django
 python-dotenv
-Pillow
+Django
+pyodbc
+pillow
+redis
