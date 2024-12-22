@@ -1,8 +1,8 @@
 from django.urls import path
 from django.views.decorators.cache import cache_page, never_cache
 
-from dogs.views import index, categories, category_dogs, \
-    DogListView, DogCreateView, DogDetailView, DogUpdateView, DogDeleteView, DogCategoryListView
+from dogs.views import (index, categories, DogListView, DogCreateView, DogDetailView, DogUpdateView, \
+    DogDeleteView, DogCategoryListView)
 from dogs.apps import DogsConfig
 
 app_name = DogsConfig.name

@@ -27,16 +27,19 @@ def categories(request):
     return render(request, 'dogs/categories.html', context)
 
 
-@login_required
-def category_dogs(request, pk):
-    category_item = Category.objects.get(pk=pk)
-    context = {
-        'object_list': Dog.objects.filter(category_id=pk),
-        'title': f'Собаки породы - {category_item.name}',
-        'category_pk': category_item.pk,
-    }
-    return render(request, 'dogs/dogs.html', context)
+class DogCategoryListView(ListView):
+    model = Dog
+    template_name = 'dogs/dogs.html'
 
+    def get_queryset(self):
+        queryset = super().get_queryset().filter(
+            category_id=self.get('pk'),
+        )
+
+        # if not self.request.user.is_staff:
+        #     queryset = queryset.filter(owner=self.request.user)
+
+        return queryset
 
 class DogListView(ListView):
     model = Dog
