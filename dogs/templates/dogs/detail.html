@@ -5,17 +5,21 @@
 <div class="col-mb-4">
     <div class="card mb-4 box-shadow">
         <img class="card-img-top"
-                 src="{{ object.photo|dogs_media }}" width="300" height="320"
-                 alt="Card image cap">
-            <div class="card-text">
-                <p class="text-text">{{ object.name|title }}</p>
-                <span class="text-muted">{{ object.birth_date|default:"-" }}</span><br>
-                <span class="text-muted">{{ object.owner|default:"Без хозяина" }}</span>
-            </div>
-            <div class="card-footer">
-                <a class="btn btn-link" href="{% url 'dogs:update_dog' object.pk %}">обновить</a>
-                <a class="btn btn-link" href="{% url 'dogs:delete_dog' object.pk %}">удалить</a>
-            </div>
+             src="{{ object.photo|dogs_media }}" width="300" height="320"
+             alt="Card image cap">
+        <div class="card-body">
+            <p class="text-text">{{ object.name|title }}</p>
+            <span class="text-muted">{{ object.owner|default:"Без хозяина" }}</span><br>
+            <span class="text-muted">{{ object.owner.first_name }}</span><br>
+            <span class="text-muted">{{ object.owner.phone }}</span><br>
+        </div>
+        <div class="card-footer">
+            <a class="btn btn-link" href="{% url 'dogs:list_dogs' %}">назад</a>
+            {% if user.is_staff or user == object.owner %}
+            <a class="btn btn-link" href="{% url 'dogs:update_dog' object.pk %}">обновить</a>
+            <a class="btn btn-link" href="{% url 'dogs:delete_dog' object.pk %}">удалить</a>
+            {% endif %}
+        </div>
 
     </div>
 </div>
