@@ -1,0 +1,89 @@
+[
+  {
+    "model": "dogs.category",
+    "pk": 1,
+    "fields": {
+      "name": "Овчарка",
+      "description": "Хороший сторож, большая и пушистая"
+    }
+  },
+  {
+    "model": "dogs.category",
+    "pk": 2,
+    "fields": {
+      "name": "Колли",
+      "description": "Красивая, снималась в кино"
+    }
+  },
+  {
+    "model": "dogs.category",
+    "pk": 3,
+    "fields": {
+      "name": "Кинг Чарльз Спаниель",
+      "description": "Очень милая и ленивая порода"
+    }
+  },
+  {
+    "model": "dogs.category",
+    "pk": 4,
+    "fields": {
+      "name": "Чихуахуа",
+      "description": "Концентрация злобы!"
+    }
+  },
+  {
+    "model": "dogs.dog",
+    "pk": 1,
+    "fields": {
+      "name": "Пушокasdas",
+      "category": 1,
+      "photo": "",
+      "birth_date": "2023-10-08",
+      "owner": null
+    }
+  },
+  {
+    "model": "dogs.dog",
+    "pk": 2,
+    "fields": {
+      "name": "Маленькая Леди",
+      "category": 3,
+      "photo": "",
+      "birth_date": "2023-08-08",
+      "owner": null
+    }
+  },
+  {
+    "model": "dogs.dog",
+    "pk": 3,
+    "fields": {
+      "name": "Рен",
+      "category": 4,
+      "photo": "",
+      "birth_date": "2023-11-08",
+      "owner": null
+    }
+  },
+  {
+    "model": "dogs.dog",
+    "pk": 4,
+    "fields": {
+      "name": "Джери Ли",
+      "category": 1,
+      "photo": "",
+      "birth_date": "2021-10-27",
+      "owner": null
+    }
+  },
+  {
+    "model": "dogs.dog",
+    "pk": 5,
+    "fields": {
+      "name": "Лесси",
+      "category": 2,
+      "photo": "",
+      "birth_date": "2023-10-08",
+      "owner": null
+    }
+  }
+]
