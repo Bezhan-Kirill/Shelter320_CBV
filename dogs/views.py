@@ -18,13 +18,12 @@ def index(request):
     return render(request, 'dogs/index.html', context)
 
 
-@login_required
-def categories(request):
-    context = {
-        'object_list': Category.objects.all(),
+class CategoryListView(ListView):
+    model = Category
+    extra_context = {
         'title': 'Питомник - Все наши породы'
     }
-    return render(request, 'dogs/categories.html', context)
+    template_name = 'dogs/categories.html'
 
 
 class DogCategoryListView(ListView):
@@ -40,6 +39,7 @@ class DogCategoryListView(ListView):
         #     queryset = queryset.filter(owner=self.request.user)
 
         return queryset
+
 
 class DogListView(ListView):
     model = Dog
