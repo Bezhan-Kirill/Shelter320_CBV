@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse, reverse_lazy
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
 from django.contrib.auth.decorators import login_required
@@ -6,9 +6,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import Http404
 from django.forms import inlineformset_factory
 
-from dogs.models import Category, Dog
-from dogs.forms import DogForm, ParentForm, Parent
-
+from dogs.models import Category, Dog, Parent
+from dogs.forms import DogForm, ParentForm
+from users.models import UserRoles
 
 def index(request):
     context = {
@@ -32,7 +32,7 @@ class DogCategoryListView(ListView):
 
     def get_queryset(self):
         queryset = super().get_queryset().filter(
-            category_id=self.get('pk'),
+            category_id=self.kwargs.get('pk'),
         )
 
         # if not self.request.user.is_staff:
@@ -48,6 +48,25 @@ class DogListView(ListView):
     }
     template_name = 'dogs/dogs.html'
 
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        queryset = queryset.filter(is_active=True)
+        return queryset
+
+class DogDeactivateListView(ListView):
+    model = Dog
+    extra_context = {
+        'title': 'Питомник - неактивные собаки',
+    }
+    template_name = 'dogs/dogs.html'
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        if self.request.user.role in [UserRoles.MODERATOR, UserRoles.ADMIN]:
+            queryset = queryset.filter(is_active=False)
+        if self.request.user.role == UserRoles.USER:
+            queryset = queryset.filter(is_active=False, owner=self.request.user)
+        return queryset
 
 class DogCreateView(LoginRequiredMixin, CreateView):
     model = Dog
@@ -102,7 +121,18 @@ class DogUpdateView(LoginRequiredMixin, UpdateView):
             formset.save()
 
         return super().form_valid(form)
+
+
 class DogDeleteView(DeleteView):
     model = Dog
     template_name = 'dogs/delete.html'
     success_url = reverse_lazy('dogs:list_dogs')
+
+def dog_toggle_activity(request, pk):
+    dog_item = get_object_or_404(Dog, pk=pk)
+    if dog_item.is_active:
+        dog_item.is_active = False
+    else:
+        dog_item.is_active = True
+    dog_item.save()
+    return redirect(reverse('dogs:list_dogs'))
