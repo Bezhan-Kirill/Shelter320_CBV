@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.http import Http404, HttpResponseForbidden
 from django.forms import inlineformset_factory
-# from django.core.exceptions import PermisionDenied
+from django.core.exceptions import PermissionDenied
 
 from dogs.models import Category, Dog, Parent
 from dogs.forms import DogForm, ParentForm
@@ -75,11 +75,11 @@ class DogCreateView(LoginRequiredMixin, CreateView):
     model = Dog
     form_class = DogForm
     template_name = 'dogs/create_update.html'
-    success_url = reverse_lazy('dogs:list_dogs')
+    success_url = reverse_lazy('dogs:dogs')
 
     def form_valid(self, form):
         if self.request.user.role != UserRoles.USER:
-            raise PermisionDenied("У вас нет права доступа!")
+            raise PermissionDenied("У вас нет права доступа!")
             # return HttpResponseForbidden("У вас нет права доступа") # только если ожидается перенаправление
         self.object = form.save()
         self.object.owner = self.request.user
@@ -105,7 +105,7 @@ class DogUpdateView(LoginRequiredMixin, UpdateView):
         self.object = super().get_object(queryset)
         # if self.object.owner != self.request.user and not self.request.user.is_staff:
         if self.object.owner != self.request.user and self.request.user.role !=UserRoles.ADMIN:
-            raise PermisionDenied()
+            raise PermissionDenied()
         return self.object
 
     def get_context_data(self, **kwargs):
