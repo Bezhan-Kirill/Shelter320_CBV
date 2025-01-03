@@ -16,6 +16,9 @@
                 <span class="card-text">Телефон: {{user.phone|default:"Не указано"}}</span><br>
                 <span class="card-text">Телеграмм-аккаунт: {{user.telegram|default:"Не указано"}}</span><br>
                 <button class="btn btn-outline-primary">
+                    <a class="btn btn-link" href="{% url 'users:update_user' %}">Обновить пользователя</a>
+                </button>
+                <button class="btn btn-outline-primary">
                     <a class="btn btn-link" href="{% url 'users:change_password_user' %}">изменить пароль</a>
                 </button>
                 <button class="btn btn-outline-danger">

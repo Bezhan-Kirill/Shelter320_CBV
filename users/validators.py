@@ -23,7 +23,7 @@ def validate_password(field):
             error_messages[0][language],
             code=error_messages[0][language]
         )
-    if not 8 <= len(field) <= 16:
+    if not 4 <= len(field) <= 16:
         raise ValidationError(
             error_messages[1][language],
             code=error_messages[1][language]

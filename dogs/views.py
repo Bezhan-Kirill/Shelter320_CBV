@@ -8,8 +8,10 @@ from django.forms import inlineformset_factory
 from django.core.exceptions import PermissionDenied
 
 from dogs.models import Category, Dog, Parent
+from users.models import User
 from dogs.forms import DogForm, ParentForm
 from users.models import UserRoles
+from dogs.services import send_views_mail
 
 def index(request):
     context = {
@@ -75,12 +77,13 @@ class DogCreateView(LoginRequiredMixin, CreateView):
     model = Dog
     form_class = DogForm
     template_name = 'dogs/create_update.html'
-    success_url = reverse_lazy('dogs:dogs')
+    success_url = reverse_lazy('dogs:list_dogs')
 
     def form_valid(self, form):
-        if self.request.user.role != UserRoles.USER:
-            raise PermissionDenied("У вас нет права доступа!")
-            # return HttpResponseForbidden("У вас нет права доступа") # только если ожидается перенаправление
+        # if self.request.user.role != UserRoles.USER:
+        #     raise PermissionDenied("У вас нет права доступа!")
+        #     return HttpResponseForbidden("У вас нет права доступа") # только если ожидается перенаправление
+
         self.object = form.save()
         self.object.owner = self.request.user
         self.object.save()
@@ -91,6 +94,20 @@ class DogCreateView(LoginRequiredMixin, CreateView):
 class DogDetailView(LoginRequiredMixin, DetailView):
     model = Dog
     template_name = 'dogs/detail.html'
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        object = self.get_object()
+        context_data['title'] = f'{object.name} {object.category}'
+        dog_object_increase = get_object_or_404(Dog, pk=object.pk)
+        # if object.owner != self.request.user and self.request.user.role not in [UserRoles.ADMIN, UserRolesMODERATOR]:
+        if object.owner != self.request.user:
+            dog_object_increase.views_count()
+        if object.owner:
+            object_owner_email = object.owner.email
+            if dog_object_increase.views % 100 == 0 and dog_object_increase.views != 0:
+                send_views_mail(dog_object_increase.name, object_owner_email, dog_object_increase.views)
+        return context_data
 
 
 class DogUpdateView(LoginRequiredMixin, UpdateView):
@@ -110,7 +127,7 @@ class DogUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
-        ParentFormset = inlineformset_factory(Dog, Parent,  form=ParentForm, extra=1)
+        ParentFormset = inlineformset_factory(Dog, Parent, form=ParentForm, extra=1)
         if self.request.method == 'POST':
             formset = ParentFormset(self.request.POST, instance=self.object)
         else:
@@ -130,11 +147,11 @@ class DogUpdateView(LoginRequiredMixin, UpdateView):
         return super().form_valid(form)
 
 
-class DogDeleteView(PermissionRequiredMixin ,DeleteView):
+class DogDeleteView(PermissionRequiredMixin, DeleteView):
     model = Dog
     template_name = 'dogs/delete.html'
     success_url = reverse_lazy('dogs:list_dogs')
-    permission_required = ('dogs.delete/dog')
+    permission_required = ('dogs:delete_dog')
     # dog.add_dog - PermissionRequiredMixin + CreateView
     # dog.change_dog - PermissionRequiredMixin + UpdateView
     # dog.view_dog - PermissionRequiredMixin + DetailView

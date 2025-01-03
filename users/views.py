@@ -18,10 +18,10 @@ class UserRegisterView(CreateView):
     success_url = reverse_lazy('users:login_user')
     template_name = 'users/register_user.html'
 
-    # def form_valid(self, form):
-    #     self.object - form.save()
-    #     send_register_email(self.object.email)
-    #     return super().form_valid(form)
+    def form_valid(self, form):
+        self.object = form.save()
+        send_register_email(self.object.email)
+        return super().form_valid(form)
 
 
 class UserLoginView(LoginView):
@@ -32,7 +32,7 @@ class UserLoginView(LoginView):
 class UserProfileView(UpdateView):
     model = User
     form_class = UserForm
-    template_name = 'users/user_profile.html'
+    template_name = 'users/user_profile_read_only.html'
 
     def get_object(self, queryset=None):
         return self.request.user
@@ -56,10 +56,9 @@ class UserPasswordChangeView(PasswordChangeView):
 
 class UserLogoutView(LogoutView):
     form_class = UserLoginForm
-    template_name = 'users/login_user.html'
+    template_name = 'users/logout_user.html'
 
 
-@login_required()
 def user_generate_new_password(request):
     new_password = ''.join(random.sample((string.ascii_letters + string.digits), 12))
     request.user.set_password(new_password)

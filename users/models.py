@@ -27,6 +27,9 @@ class User(AbstractUser):
     def __str__(self):
         return f'{self.email}'
 
+    def get_email(self):
+        return self.email
+
     class Meta:
         verbose_name = 'User'
         verbose_name_plural = 'Users'

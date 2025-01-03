@@ -12,9 +12,9 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 import os
 from pathlib import Path
 from dotenv import load_dotenv
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
@@ -26,7 +26,6 @@ SECRET_KEY = 'django-insecure-iq@s!yu$+=i#t%el#u8ecco&tb)dr=ql%z5s@=g4oif$@oilg=
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -74,7 +73,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
@@ -83,15 +81,15 @@ USER = os.getenv('MS_SQL_USER')
 PASSWORD = os.getenv('MS_SQL_KEY')
 HOST = os.getenv('MS_SQL_SERVER')
 DATABASE = os.getenv('MS_SQL_DATABASE')
-DATABASES ={
-    'default':{
-        'TrustServerCertificate':'yes',
-        'ENGINE':'mssql',
-        'NAME':DATABASE,
-        'USER':USER,
-        'PASSWORD':PASSWORD,
-        'SERVER':HOST,
-        'PORT':'',
+DATABASES = {
+    'default': {
+        'TrustServerCertificate': 'yes',
+        'ENGINE': 'mssql',
+        'NAME': DATABASE,
+        'USER': USER,
+        'PASSWORD': PASSWORD,
+        'SERVER': HOST,
+        'PORT': '',
         'OPTIONS': {
             # 'driver': 'SQL Server',
             'driver': 'ODBC Driver 18 for SQL Server',
@@ -99,7 +97,6 @@ DATABASES ={
         }
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -119,7 +116,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
@@ -131,14 +127,13 @@ USE_I18N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 
 STATIC_URL = 'static/'
-STATICFILES_DIRS =(
-    BASE_DIR /'static',
+STATICFILES_DIRS = (
+    BASE_DIR / 'static',
 )
 
 """django.views.static.server()
@@ -147,7 +142,7 @@ STATICFILES_DIRS =(
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = (
-    BASE_DIR /'media'
+        BASE_DIR / 'media'
 )
 
 """Поскольку MEDIA_URL определен как '/media/', то к config.urls.py добавляется следующая строка
@@ -159,7 +154,7 @@ MEDIA_ROOT = (
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'users.User'
 
-LOGIN_REDIRECT_URL = 'dogs:index' # '/'
+LOGIN_REDIRECT_URL = 'dogs:index'  # '/'
 # LOGOUT_REDIRECT_URL = 'dogs:index' # '/'
 LOGIN_URL = '/users/'
 
@@ -174,14 +169,35 @@ if CACHE_ENABLED:
         }
     }
 
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'smtp.yandex.com'
+# EMAIL_PORT = 465
+# EMAIL_HOST_USER = 'dmitrysulzhits@yandex.by'
+# EMAIL_HOST_PASSWORD = os.getenv('YANDEX_PASSWORD_APP')
+# EMAIL_USE_TLS = False
+# EMAIL_USE_SSL = True
+#
+# EMAIL_SERVER = EMAIL_HOST_USER
+# DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+# EMAIL_ADMIN = EMAIL_HOST_USER
+
+
+
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.yandex.com'
+EMAIL_HOST = 'smtp.yandex.ru'
 EMAIL_PORT = 465
-EMAIL_HOST_USER = 'dmitrysulzhits@yandex.by'
-EMAIL_HOST_PASSWORD = os.getenv('YANDEX_PASSWORD_APP')
+EMAIL_HOST_USER = 'kirillbezhan1@yandex.ru'
+EMAIL_HOST_PASSWORD = os.getenv('app_password')
 EMAIL_USE_TLS = False
 EMAIL_USE_SSL = True
-
+#
 EMAIL_SERVER = EMAIL_HOST_USER
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 EMAIL_ADMIN = EMAIL_HOST_USER
+
+# smtpUserName="kirillbezhan1@yandex.by"
+# enableSsl="true"
+# smtpPassword="Myyandexmail2004"
+# smtpAuthentication="Basic"
+# smtpServer="smtp.yandex.ru"
+# smtpPort="465"

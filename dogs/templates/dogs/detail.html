@@ -8,11 +8,14 @@
              src="{{ object.photo|dogs_media }}" width="300" height="320"
              alt="Card image cap">
         <div class="card-body">
-            <p class="text-text">{{ object.name|title }}</p>
-            <span class="text-muted">{{ object.owner|default:"Без хозяина" }}</span><br>
-            <span class="text-muted">{{ object.owner.first_name }}</span><br>
-            <span class="text-muted">{{ object.owner.phone }}</span><br>
+            <p class="text-text"><td>Кличка: </td>{{ object.name|title }}</p>
+            <span class="text-muted"><td>Дата рождения: </td>{{ object.birth_date|default:"-" }}</span><br>
+            <span class="text-muted"><td>Хозяин: </td>{{ object.owner|default:"Без хозяина" }}</span><br>
+            <span class="text-muted"><td>Имя хозяина: </td>{{ object.owner.first_name }}</span><br>
+            <span class="text-muted"><td>Телефон хозяина: </td>{{ object.owner.phone }}</span><br>
+            <span class="text-muted"><td>Просмотров:</td> {{ object.views }}</span><br>
         </div>
+
         <div class="card-footer">
             <a class="btn btn-link" href="{% url 'dogs:list_dogs' %}">назад</a>
             {% if user.is_staff or user == object.owner %}
