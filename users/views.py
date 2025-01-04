@@ -70,7 +70,9 @@ class UserListView(ListView):
         queryset = queryset.filter(is_active=True)
         return queryset
 
-
+class UserViewProfileView():
+    model = User
+    template_name = 'user/user_view_profile.html'
 def user_generate_new_password(request):
     new_password = ''.join(random.sample((string.ascii_letters + string.digits), 12))
     request.user.set_password(new_password)
