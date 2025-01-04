@@ -34,14 +34,15 @@
                         <li><a href="{% url 'dogs:list_dogs' %}" class="text-white">Собаки</a></li>
                         <li><a href="{% url 'dogs:create_dog' %}" class="text-white">Добавить собаку</a></li>
                         {% if user.is_authenticated %}
-                            <li><a href="{% url 'users:profile_user' %}" class="text-white">Профиль</a></li>
-                            <form method="post" action="{% url 'users:logout_user' %}">
-                                {% csrf_token %}
-                                <button type="submit" class="btn btn-danger btn-sm">Выход</button>
-                            </form>
+                        <li><a href="{% url 'users:users_list' %}" class="text-white">Все пользователи</a></li>
+                        <li><a href="{% url 'users:profile_user' %}" class="text-white">Профиль</a></li>
+                        <form method="post" action="{% url 'users:logout_user' %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger btn-sm">Выход</button>
+                        </form>
                         {% else %}
-                            <li><a href="{% url 'users:login_user' %}" class="text-white">Вход</a></li>
-                            <li><a href="{% url 'users:register_user' %}" class="text-white">Регистрация</a></li>
+                        <li><a href="{% url 'users:login_user' %}" class="text-white">Вход</a></li>
+                        <li><a href="{% url 'users:register_user' %}" class="text-white">Регистрация</a></li>
                         {% endif %}
                     </ul>
                 </div>

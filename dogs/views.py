@@ -9,7 +9,7 @@ from django.core.exceptions import PermissionDenied
 
 from dogs.models import Category, Dog, Parent
 from users.models import User
-from dogs.forms import DogForm, ParentForm
+from dogs.forms import DogForm, ParentForm, DogAdminForm
 from users.models import UserRoles
 from dogs.services import send_views_mail
 
@@ -112,7 +112,6 @@ class DogDetailView(LoginRequiredMixin, DetailView):
 
 class DogUpdateView(LoginRequiredMixin, UpdateView):
     model = Dog
-    form_class = DogForm
     template_name = 'dogs/create_update.html'
 
     def get_success_url(self):
@@ -124,6 +123,16 @@ class DogUpdateView(LoginRequiredMixin, UpdateView):
         if self.object.owner != self.request.user and self.request.user.role !=UserRoles.ADMIN:
             raise PermissionDenied()
         return self.object
+
+    def get_form_class(self):
+        dog_forms = {
+            'admin': DogAdminForm,
+            'moderator': DogForm,
+            'user': DogForm,
+        }
+        user_role = self.request.user.role
+        dog_form_class = dog_forms[user_role]
+        return dog_form_class
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)

@@ -20,6 +20,15 @@ class DogForm(forms.ModelForm):
             return cleaned_data
         return
 
+class DogAdminForm(StyleFormMixin, forms.ModelForm):
+    class Meta:
+        model = Dog
+        fields = '__all__'
+
+    @staticmethod
+    def clean_birth_date():
+        DogForm.clean_birth_date()
+
 
 class ParentForm(forms.ModelForm):
     class Meta:

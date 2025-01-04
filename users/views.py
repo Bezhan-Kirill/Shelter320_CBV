@@ -2,7 +2,7 @@ import random
 import string
 
 from django.contrib.auth.views import LoginView, PasswordChangeView, LogoutView
-from django.views.generic import CreateView, UpdateView
+from django.views.generic import CreateView, UpdateView, ListView
 from django.shortcuts import render, reverse, redirect
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
@@ -55,8 +55,20 @@ class UserPasswordChangeView(PasswordChangeView):
 
 
 class UserLogoutView(LogoutView):
-    form_class = UserLoginForm
     template_name = 'users/logout_user.html'
+
+
+class UserListView(ListView):
+    model = User
+    extra_context = {
+        'title': 'Питомник все наши заводчики'
+    }
+    template_name = 'users/users.html'
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        queryset = queryset.filter(is_active=True)
+        return queryset
 
 
 def user_generate_new_password(request):
