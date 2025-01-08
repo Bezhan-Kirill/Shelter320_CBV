@@ -160,7 +160,7 @@ class DogDeleteView(PermissionRequiredMixin, DeleteView):
     model = Dog
     template_name = 'dogs/delete.html'
     success_url = reverse_lazy('dogs:list_dogs')
-    permission_required = ('dogs:delete_dog')
+    permission_required = 'dogs:delete_dog'
     # dog.add_dog - PermissionRequiredMixin + CreateView
     # dog.change_dog - PermissionRequiredMixin + UpdateView
     # dog.view_dog - PermissionRequiredMixin + DetailView
