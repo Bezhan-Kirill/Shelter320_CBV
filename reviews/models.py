@@ -1,6 +1,7 @@
 from django.db import models
 from django.conf import settings
 from django.urls import reverse
+
 from users.models import NULLABLE
 from dogs.models import Dog
 
@@ -15,10 +16,10 @@ class Review(models.Model):
     dog = models.ForeignKey(Dog, on_delete=models.CASCADE, related_name='dogs', verbose_name='Собака')
 
     def __str__(self):
-        return self.title
+        return f'{self.title}'
 
     def get_absolute_url(self):
-        return reverse('review:detail', kwargs={'slug': self.slug})
+        return reverse('reviews:detail', kwargs={'slug': self.slug})
 
     class Meta:
         verbose_name = 'review'

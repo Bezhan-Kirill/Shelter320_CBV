@@ -25,9 +25,9 @@ class DogAdminForm(StyleFormMixin, forms.ModelForm):
         model = Dog
         fields = '__all__'
 
-    @staticmethod
-    def clean_birth_date():
-        DogForm.clean_birth_date()
+    # @staticmethod
+    # def clean_birth_date():
+    #     DogForm.clean_birth_date()
 
 
 class ParentForm(forms.ModelForm):

@@ -4,8 +4,12 @@
 <div class="container">
     <div class="row">
         {% for object in object_list %}
-        {% include 'reviews/includes/inc_reviews_card.html' with object=object %}
+        {% include 'reviews/includes/inc_review_card.html' with object=object %}
         {% endfor %}
     </div>
+    <a href="{% url 'reviews:create_reviews' %}" class="btn btn-outline-success m-2 float-left">Добавить отзывы</a>
+    <a href="{% url 'reviews:deactivated_reviews' %}" class="btn btn-outline-secondary m-2 float-right">Неактивные
+        отзывы</a>
+    <a href="{% url 'reviews:list_reviews' %}" class="btn btn-outline-success m-2 float-right">Активные отзывы</a>
 </div>
 {% endblock %}

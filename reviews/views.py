@@ -7,6 +7,7 @@ from django.core.exceptions import PermissionDenied
 from reviews.models import Review
 from users.models import UserRoles
 from reviews.forms import ReviewForm
+from reviews.utils import slug_generator
 
 
 class ReviewListView(LoginRequiredMixin, ListView):
@@ -41,10 +42,23 @@ class ReviewCreateView(CreateView):
     form_class = ReviewForm
     template_name = 'reviews/review_create_update.html'
 
+    def form_valid(self, form):
+        if self.request.user.role not in [UserRoles.USER, UserRoles.ADMIN]:
+            return HttpResponseForbidden()
+        self.object = form.save()
+        print(self.object.slug)
+        if self.object.slug == 'temp_slug':
+            self.object.slug = slug_generator()
+            print(self.object.slug)
+        self.object.author = self.request.user
+        self.object.save()
+        return super().form_valid(form)
 
-class ReviewDateailReview(LoginRequiredMixin, DetailView):
-    model = Reviewtemplate_name = 'reviews/review_detail.html'
+
+class ReviewDetailView(LoginRequiredMixin, DetailView):
+    model = Review_template_name = 'reviews/review_detail.html'
     template_name = 'reviews/review_detail.html'
+
 
 class ReviewUpdateView(CreateView):
     model = Review
@@ -56,7 +70,7 @@ class ReviewUpdateView(CreateView):
 
     def get_object(self, queryset=None):
         self.object = super().get_object(queryset)
-        if self.object.author != self.request.user or self.request.user not in [UserRoles.ADMIN, UserRoles.MODERATOR]:
+        if self.object.author != self.request.user and self.request.user not in [UserRoles.ADMIN, UserRoles.MODERATOR]:
             raise PermissionDenied()
         return self.object
 
@@ -67,3 +81,15 @@ class ReviewDeleteView(PermissionRequiredMixin, DeleteView):
 
     def get_success_url(self):
         return reverse('reviews:list_reviews')
+
+
+def review_toggle_activity(request, slug):
+    review_item = get_object_or_404(Review, slug=slug)
+    if review_item.sign_of_review:
+        review_item.sign_of_review = False
+        review_item.save()
+        return redirect(reverse('reviews:deactivated_reviews'))
+    else:
+        review_item.sign_of_review = True
+        review_item.save()
+        return redirect(reverse('reviews:list_reviews'))
