@@ -18,5 +18,5 @@ urlpatterns = [
 
     # просмотр других пользователей
     path('all_users/', UserListView.as_view(), name='users_list'),
-    path('profile/<int:pk>/', UserViewProfileView, name='profile_user_view')
+    path('profile/<int:pk>/', UserViewProfileView.as_view(), name='profile_user_view')
 ]

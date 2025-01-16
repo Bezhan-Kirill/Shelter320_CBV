@@ -1,5 +1,5 @@
 from django.http import HttpResponseForbidden
-from django.shortcuts import render, reverse, get_object_or_404, redirect
+from django.shortcuts import reverse, get_object_or_404, redirect
 from django.views.generic import CreateView, ListView, DetailView, DeleteView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.core.exceptions import PermissionDenied
@@ -12,6 +12,7 @@ from reviews.utils import slug_generator
 
 class ReviewListView(LoginRequiredMixin, ListView):
     model = Review
+    paginate_by = 2
     extra_context = {
         'title': 'Все отзывы о собаке'
     }
@@ -56,11 +57,11 @@ class ReviewCreateView(CreateView):
 
 
 class ReviewDetailView(LoginRequiredMixin, DetailView):
-    model = Review_template_name = 'reviews/review_detail.html'
+    model = Review
     template_name = 'reviews/review_detail.html'
 
 
-class ReviewUpdateView(CreateView):
+class ReviewUpdateView(UpdateView):
     model = Review
     form_class = ReviewForm
     template_name = 'reviews/review_create_update.html'

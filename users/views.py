@@ -2,10 +2,11 @@ import random
 import string
 
 from django.contrib.auth.views import LoginView, PasswordChangeView, LogoutView
-from django.views.generic import CreateView, UpdateView, ListView
+from django.views.generic import CreateView, UpdateView, ListView, DetailView
 from django.shortcuts import render, reverse, redirect
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from users.models import User
 from users.forms import UserRegisterForm, UserLoginForm, UserUpdateForm, UserPasswordChangeForm, UserForm
@@ -60,6 +61,7 @@ class UserLogoutView(LogoutView):
 
 class UserListView(ListView):
     model = User
+    paginate_by = 2
     extra_context = {
         'title': 'Питомник все наши заводчики'
     }
@@ -70,9 +72,17 @@ class UserListView(ListView):
         queryset = queryset.filter(is_active=True)
         return queryset
 
-class UserViewProfileView():
+
+class UserViewProfileView(LoginRequiredMixin, DetailView):
     model = User
     template_name = 'users/user_view_profile.html'
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        object = self.get_object()
+        context_data[''] = f'{object.pk}'
+        return context_data
+
 def user_generate_new_password(request):
     new_password = ''.join(random.sample((string.ascii_letters + string.digits), 12))
     request.user.set_password(new_password)

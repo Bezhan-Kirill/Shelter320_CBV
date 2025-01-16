@@ -1,17 +1,16 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse, reverse_lazy
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-from django.http import Http404, HttpResponseForbidden
 from django.forms import inlineformset_factory
 from django.core.exceptions import PermissionDenied
+from django.db.models import Q
 
 from dogs.models import Category, Dog, Parent
-from users.models import User
 from dogs.forms import DogForm, ParentForm, DogAdminForm
 from users.models import UserRoles
 from dogs.services import send_views_mail
+
 
 def index(request):
     context = {
@@ -21,12 +20,27 @@ def index(request):
     return render(request, 'dogs/index.html', context)
 
 
-class CategoryListView(ListView):
+class CategoryListView(LoginRequiredMixin, ListView):
     model = Category
     extra_context = {
         'title': 'Питомник - Все наши породы'
     }
     template_name = 'dogs/categories.html'
+
+
+class CategorySearchListView(LoginRequiredMixin, ListView):
+    model = Category
+    template_name = 'dogs/categories.html'
+    extra_context = {
+        'title': 'Результаты поискового запроса',
+    }
+
+    def get_queryset(self):
+        query = self.request.GET.get('q')
+        object_list = Category.objects.filter(
+            Q(name__icontains=query),
+        )
+        return object_list
 
 
 class DogCategoryListView(ListView):
@@ -35,7 +49,7 @@ class DogCategoryListView(ListView):
 
     def get_queryset(self):
         queryset = super().get_queryset().filter(
-            category_id=self.kwargs.get('pk'),
+            category_id=self.kwargs.get('pk'), is_active=True
         )
 
         # if not self.request.user.is_staff:
@@ -46,6 +60,7 @@ class DogCategoryListView(ListView):
 
 class DogListView(ListView):
     model = Dog
+    paginate_by = 3
     extra_context = {
         'title': 'Питомник - Все наши собаки',
     }
@@ -71,6 +86,21 @@ class DogDeactivateListView(LoginRequiredMixin, ListView):
         if self.request.user.role == UserRoles.USER:
             queryset = queryset.filter(is_active=False, owner=self.request.user)
         return queryset
+
+
+class DogSearchListView(LoginRequiredMixin, ListView):
+    model = Dog
+    template_name = 'dogs/dogs.html'
+    extra_context = {
+        'title': 'Результаты поискового запроса',
+    }
+
+    def get_queryset(self):
+        query = self.request.GET.get('q')
+        object_list = Dog.objects.filter(
+            Q(name__icontains=query), is_active=True,
+        )
+        return object_list
 
 
 class DogCreateView(LoginRequiredMixin, CreateView):
@@ -120,7 +150,7 @@ class DogUpdateView(LoginRequiredMixin, UpdateView):
     def get_object(self, queryset=None):
         self.object = super().get_object(queryset)
         # if self.object.owner != self.request.user and not self.request.user.is_staff:
-        if self.object.owner != self.request.user and self.request.user.role !=UserRoles.ADMIN:
+        if self.object.owner != self.request.user and self.request.user.role != UserRoles.ADMIN:
             raise PermissionDenied()
         return self.object
 
