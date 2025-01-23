@@ -1,9 +1,8 @@
 from django.conf import settings
-from  django.core.cache import cache
+from django.core.cache import cache
 from django.core.mail import send_mail
 
-from dogs.models import Category, Dog
-
+from dogs.models import Category
 
 
 def get_categories_cache():
@@ -19,10 +18,10 @@ def get_categories_cache():
     return category_list
 
 
-def send_views_mail(dog_object, owner_email, views_count):
+def send_views_mail(dog_object, owner_email, views_count): # функция отправляет письмо владельцу когда его собака набирает 100 просмотров
     send_mail(
-        subject=f'{views_count} просмотров {dog_object}',
-        message=f'{views_count} просмотров {dog_object}',
-        from_email=settings.EMAIL_HOST_USER,
-        recipient_list=[owner_email, ]
+        subject=f'{views_count} просмотров {dog_object}', # Тема письма
+        message=f'{views_count} просмотров {dog_object}', # Содержание письма
+        from_email=settings.EMAIL_HOST_USER, # отправитель
+        recipient_list=[owner_email, ] # получатель
     )

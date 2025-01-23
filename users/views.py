@@ -3,8 +3,7 @@ import string
 
 from django.contrib.auth.views import LoginView, PasswordChangeView, LogoutView
 from django.views.generic import CreateView, UpdateView, ListView, DetailView
-from django.shortcuts import render, reverse, redirect
-from django.contrib.auth.decorators import login_required
+from django.shortcuts import reverse, redirect
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 
@@ -13,7 +12,7 @@ from users.forms import UserRegisterForm, UserLoginForm, UserUpdateForm, UserPas
 from users.services import send_register_email, send_new_password
 
 
-class UserRegisterView(CreateView):
+class UserRegisterView(CreateView):  # представление страницы создания пользователя
     model = User
     form_class = UserRegisterForm
     success_url = reverse_lazy('users:login_user')
@@ -25,12 +24,12 @@ class UserRegisterView(CreateView):
         return super().form_valid(form)
 
 
-class UserLoginView(LoginView):
+class UserLoginView(LoginView):  # представление страницы создания пользователя
     template_name = 'users/login_user.html'
     form_class = UserLoginForm
 
 
-class UserProfileView(UpdateView):
+class UserProfileView(UpdateView):  # представление страницы пользователя
     model = User
     form_class = UserForm
     template_name = 'users/user_profile_read_only.html'
@@ -39,7 +38,7 @@ class UserProfileView(UpdateView):
         return self.request.user
 
 
-class UserUpdateView(UpdateView):
+class UserUpdateView(UpdateView):  # представление страницы обновления пользователя
     model = User
     form_class = UserUpdateForm
     template_name = 'users/update_user.html'
@@ -49,17 +48,17 @@ class UserUpdateView(UpdateView):
         return self.request.user
 
 
-class UserPasswordChangeView(PasswordChangeView):
+class UserPasswordChangeView(PasswordChangeView):  # представление страницы смены пароля
     form_class = UserPasswordChangeForm
     template_name = 'users/change_password_user.html'
     success_url = reverse_lazy('users:profile_user')
 
 
-class UserLogoutView(LogoutView):
+class UserLogoutView(LogoutView):  # представление страницы выхода из акаунта
     template_name = 'users/logout_user.html'
 
 
-class UserListView(ListView):
+class UserListView(ListView):  # представление страницы всех пользователей
     model = User
     paginate_by = 2
     extra_context = {
@@ -73,7 +72,7 @@ class UserListView(ListView):
         return queryset
 
 
-class UserViewProfileView(LoginRequiredMixin, DetailView):
+class UserViewProfileView(LoginRequiredMixin, DetailView):  # представление страницы пользователя
     model = User
     template_name = 'users/user_view_profile.html'
 
@@ -83,9 +82,10 @@ class UserViewProfileView(LoginRequiredMixin, DetailView):
         context_data[''] = f'{object.pk}'
         return context_data
 
-def user_generate_new_password(request):
-    new_password = ''.join(random.sample((string.ascii_letters + string.digits), 12))
-    request.user.set_password(new_password)
+
+def user_generate_new_password(request):  # функция генерирует новый пароль
+    new_password = ''.join(random.sample((string.ascii_letters + string.digits), 12))  # создает пароль из 12 случайных букв и цифр
+    request.user.set_password(new_password)  # устанавливает новый пароль и сохраняет
     request.user.save()
-    send_new_password(request.user.email, new_password)
-    return redirect(reverse('dogs:index'))
+    send_new_password(request.user.email, new_password)  # отправляет новый пароль на почту
+    return redirect(reverse('dogs:index'))  # возвращает на главную страницу

@@ -10,7 +10,7 @@ class UserRoles(models.TextChoices):
     USER = 'user', _('user')
 
 
-class User(AbstractUser):
+class User(AbstractUser):  # модель пользователя для базы данных
     username = None
     email = models.EmailField(unique=True, verbose_name='email')
     role = models.CharField(max_length=9, choices=UserRoles.choices, default=UserRoles.USER)

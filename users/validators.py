@@ -4,7 +4,7 @@ from django.conf import settings
 
 
 
-def validate_password(field):
+def validate_password(field):  # валидация пароля
     pattern = re.compile(r'^[A-Za-z0-9]+$')
     language = settings.LANGUAGE_CODE
     error_messages = [

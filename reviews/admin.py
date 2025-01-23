@@ -2,7 +2,7 @@ from django.contrib import admin
 from reviews.models import Review
 
 
-@admin.register(Review)
+@admin.register(Review)  # регистрация модели в панели админа
 class ReviewAdmin(admin.ModelAdmin):
     list_display = ('title', 'dog', 'author', 'created', 'sign_of_review',)
     ordering = ('created',)

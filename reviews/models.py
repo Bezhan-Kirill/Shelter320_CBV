@@ -6,7 +6,7 @@ from users.models import NULLABLE
 from dogs.models import Dog
 
 
-class Review(models.Model):
+class Review(models.Model): # модель отзыва для базы данных
     title = models.CharField(max_length=150, verbose_name='Заголовок')
     slug = models.SlugField(max_length=25, unique=True, db_index=True, verbose_name='URL')
     content = models.TextField(verbose_name='Содержимое')

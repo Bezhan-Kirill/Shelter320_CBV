@@ -2,19 +2,20 @@ from django.db import models
 from django.conf import settings
 from users.models import NULLABLE
 
-class Category (models.Model):
+
+class Category(models.Model): # модель породы для базы данных
     name = models.CharField(max_length=100, verbose_name='breed')
     description = models.CharField(max_length=1000, verbose_name='descriptions')
 
-    def __str__(self):
-            return f'{self.name}'
+    def __str__(self): # функция возвращает название породы
+        return f'{self.name}'
 
     class Meta:
         verbose_name = 'breed'
         verbose_name_plural = 'breeds'
 
 
-class Dog(models.Model):
+class Dog(models.Model): # модель собаки для базы данных
     name = models.CharField(max_length=250, verbose_name='dog_name')
     # category = models.CharField(max_length=100, verbose_name='breed')
     category = models.ForeignKey(Category, on_delete=models.CASCADE, verbose_name='breed')
@@ -27,16 +28,16 @@ class Dog(models.Model):
 
     views = models.IntegerField(default=0, verbose_name='просмотры')
 
-    def __str__(self):
+    def __str__(self): # функция возвращает имя собаки и породу
         return f'{self.name} ({self.category})'
 
-    def views_count(self):
+    def views_count(self): # функция вызывается когда пользователь открывает карточку собаки, увеличивает количество просмотров на 1
         self.views += 1
         self.save()
 
     class Meta:
-        verbose_name = 'dog' # понятное человеку имя модели
-        verbose_name_plural = 'dogs' # понятное человеку имя множественное число
+        verbose_name = 'dog'  # понятное человеку имя модели
+        verbose_name_plural = 'dogs'  # понятное человеку имя множественное число
         # abstaract = True # Данная модель станет абстракным базовым классом
         # app_label = 'dogs' # если модель определена за пределами app., то момжно таким образом ее к нему отнести
         # ordering =  [-1] # Изменение порядка полей модели
@@ -46,13 +47,13 @@ class Dog(models.Model):
         # get_latest_by = 'birth_date' # Возвращает последний объект по порядку возрастания (самая молодая собака)
 
 
-class Parent(models.Model):
+class Parent(models.Model): # модель родителя для базы данных
     dog = models.ForeignKey(Dog, on_delete=models.CASCADE)
     name = models.CharField(max_length=250, verbose_name='dog_name')
     category = models.ForeignKey(Category, on_delete=models.CASCADE, verbose_name='breed')
     birth_date = models.DateField(**NULLABLE, verbose_name='birth_date')
 
-    def __str__(self):
+    def __str__(self): # функция возвращает имя собаки и породу
         return f'{self.name} ({self.category})'
 
     class Meta:

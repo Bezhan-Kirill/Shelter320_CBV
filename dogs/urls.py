@@ -8,7 +8,7 @@ from dogs.apps import DogsConfig
 
 app_name = DogsConfig.name
 
-urlpatterns = [
+urlpatterns = [  # Адреса страниц на сайте
     path('', cache_page(60)(index), name='index'),
     path('categories/', cache_page(60)(CategoryListView.as_view()), name='categories'),
     path('categories/search', CategorySearchListView.as_view(), name='search_categories'),
