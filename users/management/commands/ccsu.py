@@ -9,7 +9,7 @@ class Command(BaseCommand):
         admin = User.objects.create(
             email='bezhan_kiril@mail.ru',
             first_name='Admin',
-            last_name='Adminov',
+            last_name='Admin',
             role='admin',
             is_staff=True,
             is_superuser=True,
@@ -37,7 +37,7 @@ class Command(BaseCommand):
         user = User.objects.create(
             email='user@mail.ru',
             first_name='User',
-            last_name='Userov',
+            last_name='User',
             role='user',
             is_staff=False,
             is_superuser=False,

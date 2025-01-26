@@ -183,11 +183,10 @@ if CACHE_ENABLED:
 # EMAIL_ADMIN = EMAIL_HOST_USER
 
 
-
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.yandex.ru'
 EMAIL_PORT = 465
-EMAIL_HOST_USER = 'kirillbezhan1@yandex.ru'
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.getenv('app_password')
 EMAIL_USE_TLS = False
 EMAIL_USE_SSL = True
@@ -195,10 +194,3 @@ EMAIL_USE_SSL = True
 EMAIL_SERVER = EMAIL_HOST_USER
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 EMAIL_ADMIN = EMAIL_HOST_USER
-
-# smtpUserName="kirillbezhan1@yandex.by"
-# enableSsl="true"
-# smtpPassword="Myyandexmail2004"
-# smtpAuthentication="Basic"
-# smtpServer="smtp.yandex.ru"
-# smtpPort="465"
